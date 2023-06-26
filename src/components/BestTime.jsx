@@ -58,18 +58,23 @@ export default function BestTime() {
 		bestTime();
 	}, [gameEndTime]);
 
-
 	useEffect(() => {
 		if (gameStarted && !gameEnded) {
-			const intervalId = setInterval(() => {
-				setCurrentTime((prevTime) => prevTime + 1);
-			}, 10);
-			// Clean up the interval on component unmount
-			return () => {
+		  const intervalId = setInterval(() => {
+			setCurrentTime((prevTime) => {
+			  if (prevTime >= 360000) {
 				clearInterval(intervalId);
-			};
+				return prevTime;
+			  }
+			  return prevTime + 1;
+			});
+		  }, 10);
+		  // Clean up the interval on component unmount
+		  return () => {
+			clearInterval(intervalId);
+		  };
 		}
-	}, [gameStarted, gameEnded]);
+	  }, [gameStarted, gameEnded]);
 
 	return (
 		<>
