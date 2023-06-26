@@ -3,29 +3,51 @@ import { format } from "date-fns";
 
 export default function BestTime() {
 	const [time, setTime] = useState(0);
+	const [gameEndTime, setGameEndTime] = useState(0);
+	const [gameBestTime, setGameBestTime] = useState(Infinity);
 	const [gameStarted, setGameStarted] = useState(false);
 	const [gameEnded, setGameEnded] = useState(false);
 
 	function resetTime() {
 		setTime(0);
+		setGameEndTime(0);
 	}
 
 	function startGame() {
 		setGameStarted(true);
 		setGameEnded(false);
-		resetTime();
 	}
 
 	function endGame() {
 		setGameEnded(true);
 		setGameStarted(false);
-		// handleGameEnd(time);
+		setGameEndTime(time);
 	}
 
-	const formattedTime = (timeValue) => {
+	function bestTime() {
+		if (gameEndTime < gameBestTime && gameEndTime !== 0) {
+		  setGameBestTime(gameEndTime);
+		}
+	  }
+
+	function formattedTime(timeValue) {
+		if (timeValue === Infinity) {
+		  return "--:--:--";
+		}
 		const date = new Date(timeValue * 10);
 		return format(date, "mm:ss:SS");
-	};
+	  }
+
+	useEffect(() => {
+		if (gameStarted) {
+			resetTime();
+		}
+	}, [gameStarted]);
+
+	useEffect(() => {
+		bestTime();
+	}, [gameEndTime]);
+
 
 	useEffect(() => {
 		if (gameStarted && !gameEnded) {
@@ -46,8 +68,7 @@ export default function BestTime() {
 					<div>Time: {formattedTime(time)}</div>
 				</div>
 				<div>
-					{/* <div>Best Time: {bestTime ? formattedTime(bestTime) : "N/A"}</div> */}
-					<div>Best Time: 00:00:00</div>
+					<div>Best Time: {formattedTime(gameBestTime)}</div>
 				</div>
 			</section>
 			<button onClick={startGame} disabled={gameStarted}>
