@@ -2,8 +2,9 @@ body {
 	box-sizing: border-box;
 	margin: 0;
 	padding: 0;
-}
-
-.App {
 	height: 100vh;
-}
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: lightgreen;
+  }

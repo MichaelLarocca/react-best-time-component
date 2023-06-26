@@ -2,14 +2,30 @@ import React, { useState, useEffect } from "react";
 import { format } from "date-fns";
 
 export default function BestTime() {
-	const [time, setTime] = useState(0);
+	const [currentTime , setCurrentTime ] = useState(0);
 	const [gameEndTime, setGameEndTime] = useState(0);
-	const [gameBestTime, setGameBestTime] = useState(Infinity);
+	const [gameBestTime, setGameBestTime] = useState(getBestTime());
 	const [gameStarted, setGameStarted] = useState(false);
 	const [gameEnded, setGameEnded] = useState(false);
 
+	function getBestTime() {
+		const storedBestTime = localStorage.getItem("bestTime");
+		return storedBestTime ? parseInt(storedBestTime, 10) : Infinity;
+	}
+
+	function saveBestTime(bestime) {
+	localStorage.setItem("bestTime", bestime);
+	}    
+
+	function bestTime() {
+		if (gameEndTime < gameBestTime && gameEndTime !== 0) {
+			setGameBestTime(gameEndTime);
+			saveBestTime(gameEndTime);
+		}
+	}
+
 	function resetTime() {
-		setTime(0);
+		setCurrentTime(0);
 		setGameEndTime(0);
 	}
 
@@ -21,17 +37,11 @@ export default function BestTime() {
 	function endGame() {
 		setGameEnded(true);
 		setGameStarted(false);
-		setGameEndTime(time);
+		setGameEndTime(currentTime);
 	}
 
-	function bestTime() {
-		if (gameEndTime < gameBestTime && gameEndTime !== 0) {
-		  setGameBestTime(gameEndTime);
-		}
-	  }
-
 	function formattedTime(timeValue) {
-		if (timeValue === Infinity) {
+		if (timeValue === Infinity || isNaN(timeValue)) {
 		  return "--:--:--";
 		}
 		const date = new Date(timeValue * 10);
@@ -52,7 +62,7 @@ export default function BestTime() {
 	useEffect(() => {
 		if (gameStarted && !gameEnded) {
 			const intervalId = setInterval(() => {
-				setTime((prevTime) => prevTime + 1);
+				setCurrentTime((prevTime) => prevTime + 1);
 			}, 10);
 			// Clean up the interval on component unmount
 			return () => {
@@ -64,10 +74,10 @@ export default function BestTime() {
 	return (
 		<>
 			<section className="best-time">
-				<div>
-					<div>Time: {formattedTime(time)}</div>
+				<div className="inner-border">
+					<div>Time: {formattedTime(currentTime)}</div>
 				</div>
-				<div>
+				<div className="inner-border">
 					<div>Best Time: {formattedTime(gameBestTime)}</div>
 				</div>
 			</section>
