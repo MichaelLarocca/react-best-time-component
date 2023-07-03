@@ -1,21 +1,34 @@
 import React, { useState, useEffect } from "react";
 import { format } from "date-fns";
+import { v4 as uuidv4 } from "uuid";
 
 export default function BestTime() {
+	const [gameID, setGameID] = useState(getOrSetGameID());
 	const [currentTime , setCurrentTime ] = useState(0);
 	const [gameEndTime, setGameEndTime] = useState(0);
 	const [gameBestTime, setGameBestTime] = useState(getBestTime());
 	const [gameStarted, setGameStarted] = useState(false);
 	const [gameEnded, setGameEnded] = useState(false);
 
+	function getOrSetGameID() {
+		const storedGameID = localStorage.getItem("gameID");
+		if (storedGameID) {
+		  return storedGameID;
+		} else {
+		  const newGameID = uuidv4();
+		  localStorage.setItem("gameID", newGameID);
+		  return newGameID;
+		}
+	  }
+
 	function getBestTime() {
-		const storedBestTime = localStorage.getItem("bestTime");
+		const storedBestTime = localStorage.getItem(`bestTime-${gameID}`);
 		return storedBestTime ? parseInt(storedBestTime, 10) : Infinity;
-	}
+	  }
 
 	function saveBestTime(bestime) {
-	localStorage.setItem("bestTime", bestime);
-	}    
+		localStorage.setItem(`bestTime-${gameID}`, bestime);
+	  }
 
 	function bestTime() {
 		if (gameEndTime < gameBestTime && gameEndTime !== 0) {
