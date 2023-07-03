@@ -1,6 +1,7 @@
 ![TN-TXG-94](https://github.com/MichaelLarocca/blog-michael-jude-larocca/blob/main/posts/2023/07-23/img/07-03-2023/TN-TXG-94.png?raw=true)
 
-# react-best-time-component
+### Best Time React Component
+This repository contains a reusable best time React component for tracking players' best times in games. The component uses the date-fns and UUID libraries, React hooks, and local storage to manage and display the best time achieved in a game.
 
 ### Installation
 1. Clone this repository
